@@ -44,62 +44,109 @@ extension RuoloExtension on Ruolo {
 }
 
 class Giocatore {
-  final String id;
+  final int id;
   final String nome;
   final String squadra;
   final Ruolo ruolo;
-  final double quotazione;
-  final double fantamedia;
-  final double mediaVoto;
-  final int presenze;
-  final int gol;
-  final int assist;
+
+  // Dal listone quotazioni (in arrivo quando disponibile in Excel)
+  final double? quotazione;
+  final double? fvm;
+
+  // Dalle statistiche storiche (es. stagione 2025/26)
+  final int? presenze;
+  final double? mediaVoto;
+  final double? fantamedia;
+  final int? golFatti;
+  final int? golSubiti;
+  final int? rigoriParati;
+  final int? rigoriCalciati;
+  final int? rigoriSegnati;
+  final int? rigoriSbagliati;
+  final int? assist;
+  final int? ammonizioni;
+  final int? espulsioni;
+  final int? autogol;
 
   const Giocatore({
     required this.id,
     required this.nome,
     required this.squadra,
     required this.ruolo,
-    required this.quotazione,
-    required this.fantamedia,
-    required this.mediaVoto,
-    required this.presenze,
-    required this.gol,
-    required this.assist,
+    this.quotazione,
+    this.fvm,
+    this.presenze,
+    this.mediaVoto,
+    this.fantamedia,
+    this.golFatti,
+    this.golSubiti,
+    this.rigoriParati,
+    this.rigoriCalciati,
+    this.rigoriSegnati,
+    this.rigoriSbagliati,
+    this.assist,
+    this.ammonizioni,
+    this.espulsioni,
+    this.autogol,
   });
 
-  /// Indice di convenienza: fantamedia rapportata alla quotazione.
-  /// Più alto = giocatore "conveniente" rispetto al costo.
-  double get indiceConvenienza {
-    if (quotazione <= 0) return 0;
-    return fantamedia / quotazione;
+  /// true se abbiamo dati storici sufficienti per confronti statistici
+  bool get haStatistiche => fantamedia != null;
+
+  /// true se abbiamo il dato di quotazione/FVM dal listone d'asta
+  bool get haQuotazione => quotazione != null;
+
+  /// Indice di convenienza: fantamedia storica rapportata al costo d'asta.
+  /// Disponibile solo quando entrambe le fonti (listone + statistiche)
+  /// sono state importate e unite per questo giocatore.
+  double? get indiceConvenienza {
+    if (fantamedia == null || quotazione == null || quotazione == 0) {
+      return null;
+    }
+    return fantamedia! / quotazione!;
   }
 
-  factory Giocatore.fromRow(Map<String, dynamic> row) {
+  /// Crea una copia arricchendo solo i campi passati (non nulli),
+  /// lasciando invariati quelli già presenti. Usato per il merge
+  /// tra fonti diverse (listone + statistiche) sullo stesso giocatore.
+  Giocatore copyWith({
+    double? quotazione,
+    double? fvm,
+    int? presenze,
+    double? mediaVoto,
+    double? fantamedia,
+    int? golFatti,
+    int? golSubiti,
+    int? rigoriParati,
+    int? rigoriCalciati,
+    int? rigoriSegnati,
+    int? rigoriSbagliati,
+    int? assist,
+    int? ammonizioni,
+    int? espulsioni,
+    int? autogol,
+  }) {
     return Giocatore(
-      id: row['id']?.toString() ?? '',
-      nome: row['nome']?.toString() ?? '',
-      squadra: row['squadra']?.toString() ?? '',
-      ruolo: RuoloExtension.fromSigla(row['ruolo']?.toString() ?? ''),
-      quotazione: _parseDouble(row['quotazione']),
-      fantamedia: _parseDouble(row['fantamedia']),
-      mediaVoto: _parseDouble(row['mediaVoto']),
-      presenze: _parseInt(row['presenze']),
-      gol: _parseInt(row['gol']),
-      assist: _parseInt(row['assist']),
+      id: id,
+      nome: nome,
+      squadra: squadra,
+      ruolo: ruolo,
+      quotazione: quotazione ?? this.quotazione,
+      fvm: fvm ?? this.fvm,
+      presenze: presenze ?? this.presenze,
+      mediaVoto: mediaVoto ?? this.mediaVoto,
+      fantamedia: fantamedia ?? this.fantamedia,
+      golFatti: golFatti ?? this.golFatti,
+      golSubiti: golSubiti ?? this.golSubiti,
+      rigoriParati: rigoriParati ?? this.rigoriParati,
+      rigoriCalciati: rigoriCalciati ?? this.rigoriCalciati,
+      rigoriSegnati: rigoriSegnati ?? this.rigoriSegnati,
+      rigoriSbagliati: rigoriSbagliati ?? this.rigoriSbagliati,
+      assist: assist ?? this.assist,
+      ammonizioni: ammonizioni ?? this.ammonizioni,
+      espulsioni: espulsioni ?? this.espulsioni,
+      autogol: autogol ?? this.autogol,
     );
-  }
-
-  static double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value.toDouble();
-    return double.tryParse(value.toString().replaceAll(',', '.')) ?? 0.0;
-  }
-
-  static int _parseInt(dynamic value) {
-    if (value == null) return 0;
-    if (value is num) return value.toInt();
-    return int.tryParse(value.toString()) ?? 0;
   }
 
   Map<String, dynamic> toJson() => {
@@ -108,25 +155,43 @@ class Giocatore {
         'squadra': squadra,
         'ruolo': ruolo.sigla,
         'quotazione': quotazione,
-        'fantamedia': fantamedia,
-        'mediaVoto': mediaVoto,
+        'fvm': fvm,
         'presenze': presenze,
-        'gol': gol,
+        'mediaVoto': mediaVoto,
+        'fantamedia': fantamedia,
+        'golFatti': golFatti,
+        'golSubiti': golSubiti,
+        'rigoriParati': rigoriParati,
+        'rigoriCalciati': rigoriCalciati,
+        'rigoriSegnati': rigoriSegnati,
+        'rigoriSbagliati': rigoriSbagliati,
         'assist': assist,
+        'ammonizioni': ammonizioni,
+        'espulsioni': espulsioni,
+        'autogol': autogol,
       };
 
   factory Giocatore.fromJson(Map<String, dynamic> json) {
     return Giocatore(
-      id: json['id'] as String,
+      id: json['id'] as int,
       nome: json['nome'] as String,
       squadra: json['squadra'] as String,
       ruolo: RuoloExtension.fromSigla(json['ruolo'] as String),
-      quotazione: (json['quotazione'] as num).toDouble(),
-      fantamedia: (json['fantamedia'] as num).toDouble(),
-      mediaVoto: (json['mediaVoto'] as num).toDouble(),
-      presenze: json['presenze'] as int,
-      gol: json['gol'] as int,
-      assist: json['assist'] as int,
+      quotazione: (json['quotazione'] as num?)?.toDouble(),
+      fvm: (json['fvm'] as num?)?.toDouble(),
+      presenze: json['presenze'] as int?,
+      mediaVoto: (json['mediaVoto'] as num?)?.toDouble(),
+      fantamedia: (json['fantamedia'] as num?)?.toDouble(),
+      golFatti: json['golFatti'] as int?,
+      golSubiti: json['golSubiti'] as int?,
+      rigoriParati: json['rigoriParati'] as int?,
+      rigoriCalciati: json['rigoriCalciati'] as int?,
+      rigoriSegnati: json['rigoriSegnati'] as int?,
+      rigoriSbagliati: json['rigoriSbagliati'] as int?,
+      assist: json['assist'] as int?,
+      ammonizioni: json['ammonizioni'] as int?,
+      espulsioni: json['espulsioni'] as int?,
+      autogol: json['autogol'] as int?,
     );
   }
 }

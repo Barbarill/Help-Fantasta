@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/giocatori_provider.dart';
+import 'screens/import_screen.dart';
 
 void main() {
   runApp(const HelpFantastaApp());
@@ -9,26 +12,15 @@ class HelpFantastaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Help Fantasta',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.green,
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Help Fantasta')),
-      body: const Center(
-        child: Text('Progetto avviato 🚀'),
+    return ChangeNotifierProvider(
+      create: (_) => GiocatoriProvider()..caricaDaStorage(),
+      child: MaterialApp(
+        title: 'Help Fantasta',
+        theme: ThemeData(
+          colorSchemeSeed: Colors.green,
+          useMaterial3: true,
+        ),
+        home: const ImportScreen(),
       ),
     );
   }
