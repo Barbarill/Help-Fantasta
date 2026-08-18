@@ -4,6 +4,7 @@ import '../models/asta.dart';
 import '../models/giocatore.dart';
 import '../providers/asta_provider.dart';
 import '../providers/giocatori_provider.dart';
+import '../widgets/ricerca_giocatore_dialog.dart';
 
 class AstaScreen extends StatelessWidget {
   const AstaScreen({super.key});
@@ -143,6 +144,11 @@ class _RosaAsta extends StatelessWidget {
                 onPressed: () => _confermaReset(context),
               ),
             ],
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () => mostraRicercaGiocatore(context),
+            icon: const Icon(Icons.add),
+            label: const Text('Assegna giocatore'),
           ),
           body: Column(
             children: [
