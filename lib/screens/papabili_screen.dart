@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/giocatore.dart';
 import '../providers/giocatori_provider.dart';
 import '../providers/papabili_provider.dart';
+import '../widgets/giocatore_card.dart';
 
 class PapabiliScreen extends StatefulWidget {
   const PapabiliScreen({super.key});
@@ -76,16 +77,20 @@ class _PapabiliScreenState extends State<PapabiliScreen>
           },
           itemBuilder: (context, index) {
             final g = giocatori[index];
-            return ListTile(
+                        return GiocatoreCard(
               key: ValueKey(g.id),
-              leading: CircleAvatar(child: Text('${index + 1}')),
-              title: Text('${g.nome} — ${g.squadra}'),
-              subtitle: Text(
-                'Fantamedia: ${g.fantamedia?.toStringAsFixed(2) ?? "N/D"}',
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => papabiliProvider.rimuovi(g),
+              giocatore: g,
+              sottotitoloExtra: '#${index + 1} • ${g.squadra}'
+                  '${g.fantamedia != null ? " • FM ${g.fantamedia!.toStringAsFixed(2)}" : ""}',
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: () => papabiliProvider.rimuovi(g),
+                  ),
+                  const Icon(Icons.drag_handle, color: Colors.grey),
+                ],
               ),
             );
           },

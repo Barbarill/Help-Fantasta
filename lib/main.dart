@@ -7,6 +7,7 @@ import 'screens/import_screen.dart';
 import 'screens/sfoglia_screen.dart';
 import 'screens/papabili_screen.dart';
 import 'screens/asta_screen.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(const HelpFantastaApp());
@@ -31,10 +32,7 @@ class HelpFantastaApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Help Fantasta',
-        theme: ThemeData(
-          colorSchemeSeed: Colors.green,
-          useMaterial3: true,
-        ),
+        theme: AppTheme.tema,
         home: const HomeNavigation(),
       ),
     );

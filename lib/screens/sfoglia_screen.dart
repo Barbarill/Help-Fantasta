@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../models/giocatore.dart';
 import '../providers/giocatori_provider.dart';
 import '../providers/papabili_provider.dart';
+import '../widgets/giocatore_card.dart';
+import '../theme/app_theme.dart';
 
 class SfogliaScreen extends StatefulWidget {
   const SfogliaScreen({super.key});
@@ -91,16 +93,12 @@ class _SfogliaScreenState extends State<SfogliaScreen>
           itemBuilder: (context, index) {
             final g = giocatori[index];
             final selezionato = papabiliProvider.isPapabile(g.id, ruolo);
-            return ListTile(
-              title: Text('${g.nome} — ${g.squadra}'),
-              subtitle: Text(
-                'Fantamedia: ${g.fantamedia?.toStringAsFixed(2) ?? "N/D"}'
-                '  •  Presenze: ${g.presenze ?? "N/D"}',
-              ),
+            return GiocatoreCard(
+              giocatore: g,
               trailing: IconButton(
                 icon: Icon(
                   selezionato ? Icons.star : Icons.star_border,
-                  color: selezionato ? Colors.amber : null,
+                  color: selezionato ? AppColors.oro : null,
                 ),
                 onPressed: () {
                   if (selezionato) {

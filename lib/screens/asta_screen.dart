@@ -5,6 +5,8 @@ import '../models/giocatore.dart';
 import '../providers/asta_provider.dart';
 import '../providers/giocatori_provider.dart';
 import '../widgets/ricerca_giocatore_dialog.dart';
+import '../widgets/giocatore_card.dart';
+import '../widgets/ruolo_badge.dart';
 
 class AstaScreen extends StatelessWidget {
   const AstaScreen({super.key});
@@ -160,6 +162,7 @@ class _RosaAsta extends StatelessWidget {
                         .where((a) => a.ruolo == ruolo)
                         .toList();
                     return ExpansionTile(
+                      leading: RuoloBadge(ruolo: ruolo),
                       title: Text(
                         '${ruolo.nomeCompleto} '
                         '(${astaProvider.slotOccupati(ruolo)}/${astaProvider.config!.slotPerRuolo(ruolo)}'
@@ -168,13 +171,22 @@ class _RosaAsta extends StatelessWidget {
                       initiallyExpanded: true,
                       children: acquistiRuolo.map((a) {
                         final g = mappaGiocatori[a.giocatoreId];
-                        return ListTile(
-                          title: Text(g?.nome ?? 'Giocatore #${a.giocatoreId}'),
-                          subtitle: Text(g?.squadra ?? ''),
+                                                return GiocatoreCard(
+                          giocatore: g ??
+                              Giocatore(
+                                id: a.giocatoreId,
+                                nome: 'Giocatore #${a.giocatoreId}',
+                                squadra: '',
+                                ruolo: a.ruolo,
+                              ),
+                          sottotitoloExtra: g?.squadra ?? '',
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('${a.prezzo.toStringAsFixed(0)} cr'),
+                              Text(
+                                '${a.prezzo.toStringAsFixed(0)} cr',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               IconButton(
                                 icon: const Icon(Icons.close, size: 18),
                                 onPressed: () => astaProvider
