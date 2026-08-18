@@ -8,6 +8,8 @@ import 'screens/sfoglia_screen.dart';
 import 'screens/papabili_screen.dart';
 import 'screens/asta_screen.dart';
 import 'theme/app_theme.dart';
+import 'providers/pesi_provider.dart';
+import 'screens/confronta_screen.dart';
 
 void main() {
   runApp(const HelpFantastaApp());
@@ -29,6 +31,8 @@ class HelpFantastaApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AstaProvider()..carica(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => PesiProvider()),
       ],
       child: MaterialApp(
         title: 'Help Fantasta',
@@ -54,6 +58,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
     SfogliaScreen(),
     PapabiliScreen(),
     AstaScreen(),
+    ConfrontaScreen(),
   ];
 
   @override
@@ -68,6 +73,7 @@ class _HomeNavigationState extends State<HomeNavigation> {
           NavigationDestination(icon: Icon(Icons.search), label: 'Sfoglia'),
           NavigationDestination(icon: Icon(Icons.star), label: 'Papabili'),
           NavigationDestination(icon: Icon(Icons.gavel), label: 'Asta'),
+          NavigationDestination(icon: Icon(Icons.compare_arrows), label: 'Confronta'),
         ],
       ),
     );

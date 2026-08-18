@@ -47,6 +47,7 @@ class ExcelImportService {
 
     final id = _asInt(row[0]?.value);
     final ruoloSigla = row[1]?.value?.toString() ?? '';
+    final ruoloMantra = row[2]?.value?.toString();
     final nome = row[3]?.value?.toString() ?? '';
     final squadra = row[4]?.value?.toString() ?? '';
 
@@ -57,6 +58,7 @@ class ExcelImportService {
       nome: nome,
       squadra: squadra,
       ruolo: RuoloExtension.fromSigla(ruoloSigla),
+      ruoloMantra: ruoloMantra,
       presenze: _asInt(row[5]?.value),
       mediaVoto: _asDouble(row[6]?.value),
       fantamedia: _asDouble(row[7]?.value),

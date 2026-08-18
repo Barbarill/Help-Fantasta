@@ -48,6 +48,7 @@ class Giocatore {
   final String nome;
   final String squadra;
   final Ruolo ruolo;
+  final String? ruoloMantra; // es. "C(M,C)", "A(Pc)" - info tattica, solo informativa
 
   // Dal listone quotazioni (in arrivo quando disponibile in Excel)
   final double? quotazione;
@@ -88,6 +89,7 @@ class Giocatore {
     this.ammonizioni,
     this.espulsioni,
     this.autogol,
+    this.ruoloMantra,
   });
 
   /// true se abbiamo dati storici sufficienti per confronti statistici
@@ -125,6 +127,7 @@ class Giocatore {
     int? ammonizioni,
     int? espulsioni,
     int? autogol,
+    String? ruoloMantra,
   }) {
     return Giocatore(
       id: id,
@@ -146,6 +149,7 @@ class Giocatore {
       ammonizioni: ammonizioni ?? this.ammonizioni,
       espulsioni: espulsioni ?? this.espulsioni,
       autogol: autogol ?? this.autogol,
+      ruoloMantra: ruoloMantra ?? this.ruoloMantra,
     );
   }
 
@@ -169,6 +173,7 @@ class Giocatore {
         'ammonizioni': ammonizioni,
         'espulsioni': espulsioni,
         'autogol': autogol,
+        'ruoloMantra': ruoloMantra,
       };
 
   factory Giocatore.fromJson(Map<String, dynamic> json) {
@@ -192,6 +197,7 @@ class Giocatore {
       ammonizioni: json['ammonizioni'] as int?,
       espulsioni: json['espulsioni'] as int?,
       autogol: json['autogol'] as int?,
+      ruoloMantra: json['ruoloMantra'] as String?,
     );
   }
 }
